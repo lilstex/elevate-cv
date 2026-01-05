@@ -7,8 +7,7 @@ services:
     restart: always
     ports:
       - "2200:2200"
-    env_file:
-      - .env
+
     # CRITICAL for low-RAM
     deploy:
       resources:

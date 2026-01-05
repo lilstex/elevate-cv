@@ -47,14 +47,14 @@ pipeline {
                 sh """
                 export BUILD_NUMBER=${BUILD_NUMBER}
 
-                # Pull the latest image from the registry
-                docker-compose --env-file /www/wwwroot/api.feokservices.com/.env pull
+                # Go to the folder where docker-compose.yml and .env live
+                cd /www/wwwroot/api.feokservices.com
 
-                # Start/restart containers using the VPS .env
-                docker-compose --env-file /www/wwwroot/api.feokservices.com/.env up -d --remove-orphans
+                # Pull the latest image
+                docker-compose --env-file .env pull
 
-                # Clean up old Docker images
-                docker image prune -f
+                # Start/restart containers
+                docker-compose --env-file .env up -d --remove-orphans
                 """
             }
         }
