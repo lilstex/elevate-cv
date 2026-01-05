@@ -23,7 +23,7 @@ async function bootstrap() {
     .setDescription('ElevateCV API Docs')
     .setVersion('1.0')
     .addServer('http://localhost:2200/', 'Local environment')
-    .addServer('https://betty-ai-53818deeebee.herokuapp.com/', 'Development')
+    .addServer('https://api.feokservices.com/', 'Production')
     .addBearerAuth()
     .build();
 
