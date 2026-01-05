@@ -9,11 +9,6 @@ pipeline {
         // Use your DockerHub credentials ID
         DOCKER_CREDS = 'dockerhub-cred'
         DOCKER_IMAGE = 'lilstex/elevate-cv-api'
-        // These come from Jenkins Global Environment Variables
-        DATABASE_URI = "${env.DATABASE_URI}"
-        JWT_SECRET = "${env.JWT_SECRET}"
-        OPENAI_API_KEY = "${env.OPENAI_API_KEY}"
-        TOKEN_VALIDATION_DURATION = "${env.TOKEN_VALIDATION_DURATION}"
     }
 
     stages {
