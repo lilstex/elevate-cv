@@ -7,6 +7,13 @@ services:
     restart: always
     ports:
       - "2200:2200"
+    environment:
+      - NODE_ENV=production
+      - NODE_OPTIONS=--max-old-space-size=256
+      - DATABASE_URI=${DATABASE_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TOKEN_VALIDATION_DURATION=${TOKEN_VALIDATION_DURATION}
 
     # CRITICAL for low-RAM
     deploy:

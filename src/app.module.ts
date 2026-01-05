@@ -14,9 +14,9 @@ import * as Joi from 'joi';
         NODE_ENV: Joi.string()
           .valid('development', 'production')
           .default('development'),
-        DATABASE_URI: Joi.string(),
-        JWT_SECRET: Joi.string(),
-        TOKEN_VALIDATION_DURATION: Joi.string(),
+        DATABASE_URI: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        TOKEN_VALIDATION_DURATION: Joi.string().required(),
       }),
       isGlobal: true,
     }),

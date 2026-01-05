@@ -42,21 +42,22 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
-            steps {
-                sh """
-                export BUILD_NUMBER=${BUILD_NUMBER}
-
-                # Go to the folder where docker-compose.yml and .env live
-                cd /www/wwwroot/api.feokservices.com
-
-                # Pull the latest image
-                docker-compose --env-file .env pull
-
-                # Start/restart containers
-                docker-compose --env-file .env up -d --remove-orphans
-                """
+        stage('Deploy') { 
+            environment {
+                DATABASE_URI = credentials('DATABASE_URI')
+                JWT_SECRET = credentials('JWT_SECRET')
+                TOKEN_VALIDATION_DURATION = credentials('TOKEN_VALIDATION_DURATION')
+                OPENAI_API_KEY = credentials('OPENAI_API_KEY')
             }
+
+            steps { 
+                sh """ 
+                export BUILD_NUMBER=${BUILD_NUMBER} 
+
+                docker-compose pull 
+                docker-compose up -d --remove-orphans 
+                """ 
+            } 
         }
 
         stage('Cleanup') {
