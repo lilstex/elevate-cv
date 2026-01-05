@@ -54,7 +54,7 @@ pipeline {
                 docker-compose --env-file .env pull
 
                 # Start/restart containers
-                docker-compose --env-file .env up -d --force-recreate --remove-orphans
+                docker-compose --env-file .env up -d --remove-orphans
                 """
             }
         }
