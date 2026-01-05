@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.4; color: #333; }
+        .header { text-align: center; border-bottom: 2px solid #004a99; margin-bottom: 20px; }
+        .section-title { font-weight: bold; color: #004a99; border-bottom: 1px solid #ddd; margin-top: 15px; }
+        .exp-item { margin-bottom: 10px; }
+        .role { font-weight: bold; }
+        .company { font-style: italic; color: #666; }
+        ul { padding-left: 20px; margin: 5px 0; }
+        .skills { display: inline-block; background: #eee; padding: 2px 8px; margin: 2px; border-radius: 3px; font-size: 10pt; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><%= user.fullName %></h1>
+        <p><%= user.email %> | <%= user.phoneNumber %> | <%= user.linkedinUrl %></p>
+    </div>
+
+    <div class="section-title">PROFESSIONAL SUMMARY</div>
+    <p><%= ai.professionalSummary %></p>
+
+    <div class="section-title">RELEVANT EXPERIENCE</div>
+    <% ai.refinedExperience.forEach(function(exp) { %>
+        <div class="exp-item">
+            <span class="role"><%= exp.role %></span> | <span class="company"><%= exp.company %></span>
+            <ul>
+                <% exp.highlights.forEach(function(bullet) { %>
+                    <li><%= bullet %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% }); %>
+
+    <div class="section-title">TECHNICAL SKILLS</div>
+    <div>
+        <% ai.relevantSkills.forEach(function(skill) { %>
+            <span class="skills"><%= skill %></span>
+        <% }); %>
+    </div>
+</body>
+</html>

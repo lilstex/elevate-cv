@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  elevate-cv-api:
+    build: .
+    image: ${DOCKER_IMAGE}:${BUILD_NUMBER}
+    container_name: elevate-cv-api
+    restart: always
+    ports:
+      - "2200:2200"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URI=${DATABASE_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TOKEN_VALIDATION_DURATION=${TOKEN_VALIDATION_DURATION}
+    networks:
+      - elevate-network
+
+networks:
+  elevate-network:
+    driver: bridge
