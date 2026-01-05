@@ -18,7 +18,6 @@ import * as Joi from 'joi';
         JWT_SECRET: Joi.string().required(),
         TOKEN_VALIDATION_DURATION: Joi.string().required(),
       }),
-      envFilePath: '.env',
       isGlobal: true,
     }),
     MongooseModule.forRootAsync({
