@@ -1,5 +1,9 @@
 pipeline {
     agent any
+
+    options {
+        timeout(time: 20, unit: 'MINUTES') // Prevent infinite hangs
+    }
     
     environment {
         // Use your DockerHub credentials ID
@@ -19,9 +23,15 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Image') {
             steps {
-                sh "docker build -t ${DOCKER_IMAGE}:${BUILD_NUMBER} ."
+                sh """
+                docker build \
+                  --memory=1g \
+                  --memory-swap=2g \
+                  -t ${DOCKER_IMAGE}:${BUILD_NUMBER} .
+                """
+
                 sh "docker tag ${DOCKER_IMAGE}:${BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
             }
         }
@@ -39,13 +49,21 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                script {
-                    // Use docker-compose to pull the new image and restart the service
-                    sh "BUILD_NUMBER=${BUILD_NUMBER} docker-compose -f docker-compose.yml up -d"
-                    
-                    // Cleanup old images to save VPS space
-                    sh "docker image prune -f"
-                }
+                sh """
+                export BUILD_NUMBER=${BUILD_NUMBER}
+
+                docker-compose pull
+                docker-compose up -d --remove-orphans
+                """
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                sh """
+                docker image prune -f
+                docker container prune -f
+                """
             }
         }
     }
