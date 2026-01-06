@@ -54,8 +54,8 @@ pipeline {
                 sh """ 
                 export BUILD_NUMBER=${BUILD_NUMBER} 
 
-                docker compose pull 
-                docker compose up -d --remove-orphans 
+                docker-compose pull 
+                docker-compose up -d --remove-orphans 
                 """ 
             } 
         }
