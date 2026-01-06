@@ -7,6 +7,7 @@ import {
   UseGuards,
   Req,
   Res,
+  Query,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UserGuard } from 'src/security/guards/auth.guard';
@@ -20,6 +21,7 @@ import {
   ApiOperation,
   ApiParam,
   ApiProduces,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -69,6 +71,21 @@ export class ApplicationController {
       generatedCvData: aiOutput,
       generatedCoverLetter: aiOutput.coverLetter,
     });
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: 'Get all job applications for the logged-in user with pagination',
+  })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  async findAll(
+    @Req() req,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const userId = req.user._id;
+    return this.appService.getUserApplications(userId, page, limit);
   }
 
   @Get('download/:id')

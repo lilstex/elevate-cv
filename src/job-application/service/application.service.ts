@@ -37,6 +37,34 @@ export class ApplicationService {
     return application;
   }
 
+  async getUserApplications(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+  ) {
+    const skip = (page - 1) * limit;
+
+    // Execute both queries in parallel for better performance
+    const [data, total] = await Promise.all([
+      this.applicationModel
+        .find({ user: userId })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      this.applicationModel.countDocuments({ user: userId }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+      },
+    };
+  }
+
   async processJobApplication(
     userId: string,
     jobData: { title: string; company: string; description: string },
