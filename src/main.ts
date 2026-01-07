@@ -19,8 +19,8 @@ async function bootstrap() {
   });
 
   const options = new DocumentBuilder()
-    .setTitle('ElevateCV API Service')
-    .setDescription('ElevateCV API Docs')
+    .setTitle('AppliTrack API Service')
+    .setDescription('AppliTrack API Docs')
     .setVersion('1.0')
     .addServer('http://localhost:2200/', 'Local environment')
     .addServer('https://api.feokservices.com/', 'Production')

@@ -8,6 +8,8 @@ import {
   Req,
   Res,
   Query,
+  ForbiddenException,
+  Delete,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UserGuard } from 'src/security/guards/auth.guard';
@@ -66,7 +68,9 @@ export class ApplicationController {
     // Save to History
     return this.appService.saveApplication({
       user: userId,
-      ...jobData,
+      rawJobDescription: jobData.description,
+      companyName: jobData.company,
+      jobTitle: jobData.title,
       jdHash: check.jdHash,
       generatedCvData: aiOutput,
       generatedCoverLetter: aiOutput.coverLetter,
@@ -115,5 +119,34 @@ export class ApplicationController {
       'Content-Length': buffer.length,
     });
     res.end(buffer);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a single application by ID' })
+  async findOne(@Req() req, @Param('id') id: string) {
+    const userId = req.user._id;
+    const application = await this.appService.getById(id);
+
+    // Ensure the application belongs to the logged-in user
+    if (application.user.toString() !== userId.toString()) {
+      throw new ForbiddenException(
+        'You do not have permission to view this application',
+      );
+    }
+
+    return application;
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Permanently delete an application record' })
+  @ApiParam({ name: 'id', description: 'The Application ID' })
+  async remove(@Req() req, @Param('id') id: string) {
+    const userId = req.user._id;
+    await this.appService.deleteApplication(id, userId);
+
+    return {
+      message: 'Application successfully deleted',
+      deletedId: id,
+    };
   }
 }

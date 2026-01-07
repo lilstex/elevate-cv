@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
@@ -35,6 +39,23 @@ export class ApplicationService {
       throw new NotFoundException('Application history not found');
     }
     return application;
+  }
+
+  async deleteApplication(id: string, userId: string): Promise<void> {
+    const application = await this.applicationModel.findById(id);
+
+    if (!application) {
+      throw new NotFoundException('Application history not found');
+    }
+
+    // Ensure the user owns this record
+    if (application.user.toString() !== userId.toString()) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this application',
+      );
+    }
+
+    await this.applicationModel.findByIdAndDelete(id);
   }
 
   async getUserApplications(
