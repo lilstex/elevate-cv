@@ -23,7 +23,7 @@ const CvResponseSchema = z.object({
       year: z.string(),
     }),
   ),
-  certifications: z.array(z.string()).optional(),
+  certifications: z.array(z.string()),
   coverLetter: z.string(),
 });
 
@@ -52,6 +52,7 @@ export class OpenAIService {
       - Every section of the CV must clearly answer: "Why should this candidate be hired for THIS role?"
       - Content must be concise, impact-driven, and aligned directly to the JD.
       - Do NOT fabricate or exaggerate experience. Use ONLY information found in the Master Profile.
+      - If the user has no relevant certifications for this role, return an empty array [] for the certifications field.
 
       CV REQUIREMENTS:
 
