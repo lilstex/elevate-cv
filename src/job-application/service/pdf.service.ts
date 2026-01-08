@@ -33,7 +33,12 @@ export class PdfService {
       });
 
       const page = await browser.newPage();
-      await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+      await page.setContent(htmlContent, {
+        waitUntil: ['networkidle0', 'domcontentloaded'],
+      });
+
+      // Force a small wait to ensure fonts are rendered
+      await page.evaluateHandle('document.fonts.ready');
 
       const pdfBuffer = await page.pdf({
         format: 'A4',
