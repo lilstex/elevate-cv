@@ -10,6 +10,7 @@ import {
   Query,
   ForbiddenException,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UserGuard } from 'src/security/guards/auth.guard';
@@ -27,7 +28,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { ApplicationResponseDto, GenerateCvDto } from '../dto/application.dto';
+import {
+  ApplicationResponseDto,
+  GenerateCvDto,
+  UpdateApplicationDto,
+} from '../dto/application.dto';
 
 @ApiTags('Job Application')
 @ApiBearerAuth()
@@ -103,14 +108,19 @@ export class ApplicationController {
       'application/pdf': { schema: { type: 'string', format: 'binary' } },
     },
   })
-  async download(@Req() req, @Param('id') appId: string, @Res() res: Response) {
+  async download(
+    @Req() req,
+    @Param('id') appId: string,
+    @Query('template') template: string,
+    @Res() res: Response,
+  ) {
     const app = await this.appService.getById(appId);
     const profile = await this.profileService.getProfile(req.user._id);
 
     const buffer = await this.pdfService.generateCvPdf(
       app.generatedCvData,
       profile,
-      app.templateId,
+      template || 'modern',
     );
 
     res.set({
@@ -135,6 +145,34 @@ export class ApplicationController {
     }
 
     return application;
+  }
+
+  @Patch(':id')
+  @ApiOperation({
+    summary: 'Update application details',
+    description:
+      'Updates specific fields of an application record. Only the owner of the record can perform this action.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique MongoDB ID of the application record',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The application has been successfully updated.',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden: You do not own this record.',
+  })
+  @ApiResponse({ status: 404, description: 'Application not found.' })
+  async update(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateApplicationDto,
+    @Req() req,
+  ) {
+    const userId = req.user._id;
+    return this.appService.updateApplication(id, userId, updateDto);
   }
 
   @Delete(':id')

@@ -1,5 +1,11 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class GenerateCvDto {
   @ApiProperty({
@@ -27,6 +33,61 @@ export class GenerateCvDto {
   @IsNotEmpty()
   @MinLength(50)
   description: string;
+}
+
+export class UpdateApplicationDto {
+  @ApiPropertyOptional({
+    example: 'Senior Backend Engineer',
+    description: 'The tailored job title',
+  })
+  @IsOptional()
+  @IsString()
+  jobTitle?: string;
+
+  @ApiPropertyOptional({
+    example: 'Tech Solutions Inc.',
+    description: 'The name of the company',
+  })
+  @IsOptional()
+  @IsString()
+  companyName?: string;
+
+  @ApiPropertyOptional({
+    example: 'Dear Hiring Manager...',
+    description: 'The full AI-generated cover letter text',
+  })
+  @IsOptional()
+  @IsString()
+  generatedCoverLetter?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'The complex CV data object containing summary, experience, skills, and education',
+    example: {
+      professionalSummary: 'Result-driven engineer...',
+      refinedExperience: [
+        {
+          role: 'Lead Dev',
+          company: 'Acme',
+          startDate: '2020',
+          endDate: '2022',
+          highlights: ['Led team'],
+        },
+      ],
+      relevantSkills: ['NodeJS', 'TypeScript'],
+      education: [{ degree: 'BSc', school: 'Uni', year: '2019' }],
+      certifications: [{ title: 'AWS Cert', issuer: 'Amazon', date: '2023' }],
+    },
+  })
+  @IsOptional()
+  @IsObject()
+  generatedCvData?: {
+    professionalSummary: string;
+    refinedExperience: any[];
+    relevantSkills: string[];
+    education: any[];
+    certifications: any[];
+  };
 }
 
 export class ApplicationResponseDto {

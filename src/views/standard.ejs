@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body { -webkit-print-color-adjust: exact; }
+        .modern { font-family: 'Inter', sans-serif; }
+        .corporate { font-family: 'Playfair Display', serif; }
+        .resume-page { width: 210mm; min-height: 297mm; background: white; margin: 0; }
+        .break-inside-avoid { page-break-inside: avoid; }
+    </style>
+</head>
+<body className="bg-white">
+    <div className="resume-page <%= template === 'modern' ? 'modern p-12' : 'corporate p-16' %>">
+        
+        <header className="mb-10 <%= template === 'modern' ? 'border-b-8 border-emerald-500 pb-8' : 'text-center border-b-2 border-slate-900 pb-10' %>">
+            <h1 className="text-5xl font-black uppercase tracking-tighter mb-2 text-slate-900">
+                <%= user.fullName %>
+            </h1>
+            <p className="text-sm font-bold <%= template === 'modern' ? 'text-emerald-600 tracking-widest' : 'text-slate-500 italic' %> uppercase">
+                <%= ai.professionalSummary ? 'Optimized Resume' : 'Master Profile' %>
+            </p>
+            <div className="text-[10px] text-slate-400 mt-2 font-medium">
+                <%= user.email %> | <%= user.phoneNumber %> | <%= user.linkedinUrl %>
+            </div>
+        </header>
+
+        <div className="flex gap-12">
+            <div className="w-2/3 space-y-10">
+                <section>
+                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-4">Professional Profile</h2>
+                    <p className="leading-relaxed text-[14px] text-slate-700"><%= ai.professionalSummary %></p>
+                </section>
+
+                <section>
+                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-6">Experience</h2>
+                    <% ai.refinedExperience.forEach(function(exp) { %>
+                        <div className="mb-8 break-inside-avoid">
+                            <div className="flex justify-between items-baseline mb-1">
+                                <h3 className="font-bold text-lg text-slate-900"><%= exp.role %></h3>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase">
+                                    <%= exp.startDate %> — <%= exp.endDate %>
+                                </div>
+                            </div>
+                            <div className="text-sm font-bold text-emerald-600 uppercase mb-3"><%= exp.company %></div>
+                            <ul className="space-y-2">
+                                <% exp.highlights.forEach(function(bullet) { %>
+                                    <li className="text-[13px] text-slate-600 flex gap-2">
+                                        <span className="text-emerald-500 font-bold">•</span>
+                                        <span><%= bullet %></span>
+                                    </li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    <% }); %>
+                </section>
+            </div>
+
+            <div className="w-1/3 space-y-10">
+                <section className="<%= template === 'modern' ? 'bg-slate-50 p-6 rounded-2xl border border-slate-100' : '' %>">
+                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-4">Core Expertise</h2>
+                    <div className="flex flex-wrap gap-2">
+                        <% ai.relevantSkills.forEach(function(skill) { %>
+                            <span className="bg-white border border-slate-200 px-2 py-1 text-[9px] rounded font-bold uppercase text-slate-700">
+                                <%= skill %>
+                            </span>
+                        <% }); %>
+                    </div>
+                </section>
+
+                <section className="px-2">
+                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-4">Education</h2>
+                    <% (ai.education || []).forEach(function(edu) { %>
+                        <div className="mb-4">
+                            <div className="text-sm font-bold text-slate-900"><%= edu.degree %></div>
+                            <div className="text-[10px] text-slate-500 font-medium"><%= edu.school %> | <%= edu.year %></div>
+                        </div>
+                    <% }); %>
+                </section>
+
+                <section className="px-2">
+                    <h2 className="text-xs font-black uppercase tracking-[0.3em] text-emerald-600 mb-4">Certifications</h2>
+                    <% (ai.certifications || []).forEach(function(cert) { %>
+                        <div className="mb-4">
+                            <div className="text-sm font-bold text-slate-900"><%= cert.title %></div>
+                            <div className="text-[10px] text-slate-500 font-medium"><%= cert.issuer %> (<%= cert.date %>)</div>
+                        </div>
+                    <% }); %>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

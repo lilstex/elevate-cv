@@ -9,7 +9,13 @@ import { User } from 'src/user/schema/user.schema';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+        (req) => {
+          return req?.query?.token; // Fallback for window.open() downloads
+        },
+      ]),
       ignoreExpiration: false,
       secretOrKey: process.env.JWT_SECRET,
     });

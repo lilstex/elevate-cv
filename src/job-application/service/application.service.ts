@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
 import { ApplicationHistory } from '../schema/application-history.schema';
+import { UpdateApplicationDto } from '../dto/application.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -39,6 +40,34 @@ export class ApplicationService {
       throw new NotFoundException('Application history not found');
     }
     return application;
+  }
+
+  async updateApplication(
+    id: string,
+    userId: string,
+    updateDto: UpdateApplicationDto,
+  ) {
+    // Fetch the application
+    const application = await this.applicationModel.findById(id);
+
+    if (!application) {
+      throw new NotFoundException('Application history not found');
+    }
+
+    //Ensure the user owns this application
+    if (application.user.toString() !== userId.toString()) {
+      throw new ForbiddenException(
+        'You do not have permission to modify this record',
+      );
+    }
+
+    const updatedApp = await this.applicationModel.findByIdAndUpdate(
+      id,
+      { $set: updateDto },
+      { new: true },
+    );
+
+    return updatedApp;
   }
 
   async deleteApplication(id: string, userId: string): Promise<void> {
