@@ -8,13 +8,13 @@ pipeline {
     environment {
         // Use your DockerHub credentials ID
         DOCKER_CREDS = 'dockerhub-cred'
-        DOCKER_IMAGE = 'lilstex/elevate-cv-api'
+        DOCKER_IMAGE = 'lilstex/applitrack-api'
     }
 
     stages {
         stage('Source') {
             steps {
-                git branch: 'main', credentialsId: 'github-cred', url: 'https://github.com/lilstex/elevate-cv.git'
+                git branch: 'main', credentialsId: 'github-cred', url: 'https://github.com/lilstex/applitrack.git'
             }
         }
 
