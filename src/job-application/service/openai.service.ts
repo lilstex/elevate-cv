@@ -23,7 +23,13 @@ const CvResponseSchema = z.object({
       year: z.string(),
     }),
   ),
-  certifications: z.array(z.string()),
+  certifications: z.array(
+    z.object({
+      title: z.string(),
+      issuer: z.string(),
+      date: z.string(),
+    }),
+  ),
   coverLetter: z.string(),
 });
 
