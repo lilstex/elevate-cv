@@ -33,10 +33,14 @@ export class ProfileService {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 
+    // Push the new item
     user.workExperience.push(experience as any);
 
-    // Sort reverse-chronologically by endDate
+    // Sort the actual Mongoose array
     user.workExperience.sort((a, b) => this.compareDates(a.endDate, b.endDate));
+
+    // Tell Mongoose the array structure/order has changed
+    user.markModified('workExperience');
 
     return user.save();
   }
@@ -49,21 +53,17 @@ export class ProfileService {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 
-    const expIndex = user.workExperience.findIndex(
-      (exp) => exp['_id'].toString() === expId,
-    );
-    if (expIndex === -1)
-      throw new NotFoundException('Experience record not found');
+    const experience = (user.workExperience as any).id(expId);
 
-    // Update the specific record
-    user.workExperience[expIndex] = {
-      ...user.workExperience[expIndex],
-      ...updateData,
-    };
+    if (!experience) throw new NotFoundException('Experience record not found');
 
-    // Re-sort the entire array
+    // Update the subdocument fields directly
+    experience.set(updateData);
+
+    // Re-sort the array
     user.workExperience.sort((a, b) => this.compareDates(a.endDate, b.endDate));
 
+    user.markModified('workExperience');
     return user.save();
   }
 
@@ -76,11 +76,20 @@ export class ProfileService {
   }
 
   private compareDates(dateA: string, dateB: string): number {
-    const parseDate = (dateStr: string) => {
-      if (!dateStr || dateStr.toLowerCase() === 'present') return new Date();
-      return new Date(dateStr);
+    const getTime = (dateStr: string | undefined): number => {
+      // Handle "Present" - treat it as the highest possible timestamp
+      if (!dateStr || dateStr.toLowerCase().trim() === 'present') {
+        return Date.now();
+      }
+
+      // Standard ISO strings (2023-11-01)
+      const time = new Date(dateStr).getTime();
+
+      // Fallback for unparseable dates
+      return isNaN(time) ? 0 : time;
     };
 
-    return parseDate(dateB).getTime() - parseDate(dateA).getTime();
+    // Return B - A for Reverse Chronological (Descending)
+    return getTime(dateB) - getTime(dateA);
   }
 }
