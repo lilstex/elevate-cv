@@ -1,11 +1,21 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsEnum,
   IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
+
+export enum ApplicationStatus {
+  GENERATED = 'generated', // CV/Cover Letter created but not yet sent
+  APPLIED = 'applied', // Successfully submitted to the company
+  INTERVIEWING = 'interviewing', // In the recruitment process
+  OFFER_RECEIVED = 'offered', // Received a job offer
+  HIRED = 'hired', // Job secured
+  REJECTED = 'rejected', // Application was not successful
+}
 
 export class GenerateCvDto {
   @ApiProperty({
@@ -88,6 +98,19 @@ export class UpdateApplicationDto {
     education: any[];
     certifications: any[];
   };
+}
+
+export class UpdateStatusDto {
+  @ApiProperty({
+    description: 'The new status of the job application',
+    enum: ApplicationStatus,
+    example: ApplicationStatus.APPLIED,
+  })
+  @IsEnum(ApplicationStatus, {
+    message:
+      'Status must be one of: generated, applied, interviewing, offered, hired, rejected',
+  })
+  status: ApplicationStatus;
 }
 
 export class ApplicationResponseDto {

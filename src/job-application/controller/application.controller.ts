@@ -11,6 +11,7 @@ import {
   ForbiddenException,
   Delete,
   Patch,
+  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UserGuard } from 'src/security/guards/auth.guard';
@@ -32,6 +33,7 @@ import {
   ApplicationResponseDto,
   GenerateCvDto,
   UpdateApplicationDto,
+  UpdateStatusDto,
 } from '../dto/application.dto';
 
 @ApiTags('Job Application')
@@ -129,6 +131,33 @@ export class ApplicationController {
       'Content-Length': buffer.length,
     });
     res.end(buffer);
+  }
+
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'Update the recruitment status of an application' })
+  @ApiParam({
+    name: 'id',
+    description: 'The unique MongoDB ID of the application',
+    example: '658af3...',
+  })
+  @ApiBody({ type: UpdateStatusDto })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The application status has been successfully updated.',
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'No application found with the provided ID.',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Invalid status value provided.',
+  })
+  async updateStatus(
+    @Param('id') id: string,
+    @Body() updateStatusDto: UpdateStatusDto,
+  ) {
+    return this.appService.updateStatus(id, updateStatusDto);
   }
 
   @Get(':id')

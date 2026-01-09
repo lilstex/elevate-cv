@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as crypto from 'crypto';
 import { ApplicationHistory } from '../schema/application-history.schema';
-import { UpdateApplicationDto } from '../dto/application.dto';
+import { UpdateApplicationDto, UpdateStatusDto } from '../dto/application.dto';
 
 @Injectable()
 export class ApplicationService {
@@ -68,6 +68,20 @@ export class ApplicationService {
     );
 
     return updatedApp;
+  }
+
+  async updateStatus(id: string, updateStatusDto: UpdateStatusDto) {
+    const application = await this.applicationModel.findByIdAndUpdate(
+      id,
+      { $set: { status: updateStatusDto.status } },
+      { new: true, runValidators: true },
+    );
+
+    if (!application) {
+      throw new NotFoundException(`Application with ID ${id} not found`);
+    }
+
+    return application;
   }
 
   async deleteApplication(id: string, userId: string): Promise<void> {
