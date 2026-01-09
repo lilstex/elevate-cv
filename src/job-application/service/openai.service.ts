@@ -68,11 +68,13 @@ export class OpenAIService {
       - Clearly communicate the candidate’s value proposition and relevance to the JD.
       - Make it immediately obvious that the candidate fits this role.
 
-      2. WORK EXPERIENCE:
-      - Rewrite all bullet points using the X-Y-Z formula:
-        "Accomplished [X] as measured by [Y], by doing [Z]."
-      - Focus on results, outcomes, and business/technical impact — NOT responsibilities.
-      - Quantify achievements where possible using metrics, scale, performance improvements, or impact.
+      2. WORK EXPERIENCE (Reverse Chronological Order):
+      - Sorting: You MUST list experiences in descending order based on the End Date (Most Recent first). If a role is "Present," it must appear at the top.
+      - Selection: Select and prioritize only the most relevant past roles from the Profile that align with the target Job Description.
+      - The X-Y-Z Impact Formula: Rewrite every bullet point using the following structure:
+        "Accomplished [X] + as measured by [Y] + by doing [Z]"
+      - Impact Focus: Strictly eliminate "Responsibilities" or "Tasks." Every bullet must represent a Result or Outcome.
+      - Quantification: You are required to quantify achievements. Use percentages, time-saved, amounts, or scale (e.g., "reduced latency by 45%," "managed 10+ microservices").
 
       3. SKILLS SECTION:
       - Prioritize and densely pack keywords, tools, technologies, and competencies explicitly mentioned in the JD.

@@ -43,7 +43,19 @@ export class PdfService {
       const pdfBuffer = await page.pdf({
         format: 'A4',
         printBackground: true,
-        margin: { top: '0mm', right: '0mm', bottom: '0mm', left: '0mm' },
+        displayHeaderFooter: true,
+        footerTemplate: `
+        <div style="font-family: 'Inter', sans-serif; font-size: 9px; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; color: #94a3b8; border-top: 1px solid #f1f5f9; padding-top: 5px;">
+          <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
+        </div>
+      `,
+        margin: {
+          top: '0px',
+          right: '0px',
+          bottom: '0px',
+          left: '0px',
+        },
+        headerTemplate: '<div></div>',
       });
 
       await browser.close();
