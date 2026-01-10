@@ -64,6 +64,7 @@ export class PaymentController {
     @Req() request: RequestWithRawBody,
     @Res() response: ExpressResponse,
   ) {
+    console.log('STRIPE WEBHOOK');
     if (!signature) {
       throw new BadRequestException('Missing Stripe signature');
     }
@@ -102,6 +103,7 @@ export class PaymentController {
     @Req() request: Request,
     @Res() response: ExpressResponse,
   ) {
+    console.log('PAYSTACK WEBHOOK');
     if (!signature) {
       throw new BadRequestException('Missing Paystack signature');
     }
