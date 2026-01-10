@@ -1,7 +1,7 @@
 # Stage 1: Build
 FROM node:20-slim AS builder
 WORKDIR /app
-ENV NODE_OPTIONS=--max-old-space-size=512
+ENV NODE_OPTIONS=--max-old-space-size=2048
 COPY package*.json ./
 RUN npm ci --legacy-peer-deps --no-audit --no-fund
 COPY . .
@@ -28,7 +28,7 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 WORKDIR /app
 ENV NODE_ENV=production
-ENV NODE_OPTIONS=--max-old-space-size=1024 
+ENV NODE_OPTIONS=--max-old-space-size=2048 
 
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
