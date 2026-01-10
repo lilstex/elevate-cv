@@ -27,6 +27,6 @@ import { JwtStrategy } from 'src/security/middleware/jwt.strategy';
   ],
   controllers: [AuthController, ProfileController],
   providers: [AuthService, ProfileService, JwtStrategy],
-  exports: [ProfileService, JwtStrategy],
+  exports: [ProfileService, JwtStrategy, ProfileService, MongooseModule],
 })
 export class UserModule {}

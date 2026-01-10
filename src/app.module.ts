@@ -6,6 +6,7 @@ import { MongooseModule, MongooseModuleOptions } from '@nestjs/mongoose';
 import { JobApplicationModule } from './job-application/job-application.module';
 import { UserModule } from './user/user.module';
 import * as Joi from 'joi';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import * as Joi from 'joi';
     }),
     UserModule,
     JobApplicationModule,
+    PaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

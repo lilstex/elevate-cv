@@ -9,13 +9,17 @@ import { ApplicationService } from './service/application.service';
 import { OpenAIService } from './service/openai.service';
 import { PdfService } from './service/pdf.service';
 import { UserModule } from 'src/user/user.module';
+import { User, UserSchema } from 'src/user/schema/user.schema';
+import { PaymentModule } from 'src/payment/payment.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: ApplicationHistory.name, schema: ApplicationHistorySchema },
+      { name: User.name, schema: UserSchema },
     ]),
     UserModule,
+    PaymentModule,
   ],
   controllers: [ApplicationController],
   providers: [ApplicationService, OpenAIService, PdfService],

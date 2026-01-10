@@ -33,6 +33,12 @@ export class User extends Document {
   @Prop({ required: true, unique: true })
   email: string;
 
+  @Prop({ enum: ['user', 'admin'], default: 'user' })
+  role: string;
+
+  @Prop({ default: 30 })
+  credits: number;
+
   @Prop({ required: true, minlength: 8, select: false })
   password: string;
 

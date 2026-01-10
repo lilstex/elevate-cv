@@ -30,7 +30,7 @@ The **AppliTrack API** is a high-performance NestJS service designed to handle A
 
 ### 2. Environment Configuration
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root directory (Reference .env.example file):
 
 | Variable         | Description                                 |
 | ---------------- | ------------------------------------------- |

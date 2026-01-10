@@ -2,10 +2,23 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { json, Request } from 'express';
+
+interface RequestWithRawBody extends Request {
+  rawBody: Buffer;
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v1/');
+
+  app.use(
+    json({
+      verify: (req: RequestWithRawBody, res, buf) => {
+        req.rawBody = buf;
+      },
+    }),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({

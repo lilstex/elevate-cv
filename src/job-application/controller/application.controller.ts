@@ -35,6 +35,7 @@ import {
   UpdateApplicationDto,
   UpdateStatusDto,
 } from '../dto/application.dto';
+import { PaymentService } from 'src/payment/service/payment.service';
 
 @ApiTags('Job Application')
 @ApiBearerAuth()
@@ -46,6 +47,7 @@ export class ApplicationController {
     private aiService: OpenAIService,
     private pdfService: PdfService,
     private profileService: ProfileService,
+    private paymentService: PaymentService,
   ) {}
 
   @Post('generate')
@@ -72,8 +74,8 @@ export class ApplicationController {
       jobData.description,
     );
 
-    // Save to History
-    return this.appService.saveApplication({
+    // Save to History & Log Transaction
+    const savedApp = await this.appService.saveApplication({
       user: userId,
       rawJobDescription: jobData.description,
       companyName: jobData.company,
@@ -82,6 +84,11 @@ export class ApplicationController {
       generatedCvData: aiOutput,
       generatedCoverLetter: aiOutput.coverLetter,
     });
+
+    // Create the success transaction record
+    await this.paymentService.createTransaction(userId, jobData.company);
+
+    return savedApp;
   }
 
   @Get()
